@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+
+    backup:
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile
+        restart: unless-stopped
+        tty: true
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "1"
+        environment:
+            - PASSPHRASE=${PASSPHRASE}
+            - CRON_TIME_DEF=${CRON_TIME_DEF}
+            - AWS_TARGET_BUCKET=${AWS_TARGET_BUCKET}
+            - AWS_TARGET_FOLDER=${AWS_TARGET_FOLDER}
+            - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
+        volumes:
+            - source:/mnt/source
+
+volumes:
+    source:
