@@ -5,7 +5,6 @@ name: "vaultwarden"
 services:
     vaultwarden:
         image: vaultwarden/server:latest
-        container_name: vaultwarden
         restart: unless-stopped
         logging:
             driver: "json-file"

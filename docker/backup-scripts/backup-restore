@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -z "$1"];
+then
+  echo "Usage: backup-restore /target/directory";
+  exit 1;
+fi
+
+duplicity boto3+s3://${AWS_TARGET_BUCKET}/${AWS_TARGET_FOLDER} /mnt/restored

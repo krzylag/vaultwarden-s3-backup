@@ -3,7 +3,7 @@ start-dev:
 
 build-and-push:
 	docker login -u ciemnyzenek
-	docker buildx build --platform linux/amd64,linux/arm64 -t ciemnyzenek/vaultwarden-s3-backup:latest --push ./docker
+	docker buildx build --platform linux/amd64,linux/arm64 -t ciemnyzenek/vaultwarden-s3-backup:latest --push .
 
-deploy:
+deploy-prod:
 	docker compose -f docker-compose.production.yaml --env-file .env.production up -d
