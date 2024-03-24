@@ -1,0 +1,46 @@
+version: '3.9'
+
+name: "vaultwarden"
+
+services:
+    vaultwarden:
+        image: vaultwarden/server:latest
+        container_name: vaultwarden
+        restart: unless-stopped
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "1"
+        ports:
+            - ${VAULTWARDEN_HTTP_PORT}:80
+        volumes:
+            - vw-data:/data:rw
+        environment:
+            - ADMIN_TOKEN=${ADMIN_TOKEN}
+            - WEBSOCKET_ENABLED=true
+            - SIGNUPS_ALLOWED=false
+            - DOMAIN=${VAULTWARDEN_DOMAIN}
+
+    backup:
+        image: ciemnyzenek/vaultwarden-s3-backup:latest
+        restart: unless-stopped
+        tty: true
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "100m"
+                max-file: "1"
+        environment:
+            - PASSPHRASE=${PASSPHRASE}
+            - CRON_TIME_DEF=${CRON_TIME_DEF}
+            - AWS_TARGET_BUCKET=${AWS_TARGET_BUCKET}
+            - AWS_TARGET_FOLDER=${AWS_TARGET_FOLDER}
+            - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        volumes:
+            - vw-data:/mnt/source:ro
+
+volumes:
+    vw-data:

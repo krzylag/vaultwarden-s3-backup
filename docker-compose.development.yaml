@@ -4,7 +4,7 @@ services:
 
     backup:
         build:
-            context: ..
+            context: .
             dockerfile: docker/Dockerfile
         restart: unless-stopped
         tty: true
