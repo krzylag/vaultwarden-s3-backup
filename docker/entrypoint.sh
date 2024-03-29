@@ -1,10 +1,8 @@
 #!/bin/sh
 
-for filename in /entrypoint.d/*.sh; do
+for filename in /root/entrypoint.d/*.sh; do
   echo "$filename"
   "$filename"
 done
 
-/bin/bash -c "declare -p | grep -Ev '^declare -[[:alpha:]]*r' > /root/cron.env"
-chmod 400 /root/cron.env
-cron -f -L 15 > /dev/stdout 2>&1
+supervisord -c /etc/supervisord.conf

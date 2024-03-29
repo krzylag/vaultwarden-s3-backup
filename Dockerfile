@@ -1,22 +1,23 @@
-FROM debian:bookworm-slim
+FROM alpine:latest
 
-ARG BUILDKIT_PROGRESS=plain
-ENV BUILDKIT_PROGRESS=${BUILDKIT_PROGRESS}
-ARG DEBIAN_FRONTEND=noninteractive
-ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND}
+RUN apk update && apk upgrade && apk add bash supervisor aws-cli duplicity
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y cron python3-boto3 awscli duplicity
+RUN mkdir /root/entrypoint.d
+COPY docker/entrypoint.d/* /root/entrypoint.d
+RUN chmod +x /root/entrypoint.d/*
+COPY docker/entrypoint.sh /root/entrypoint.sh
+RUN chmod +x /root/entrypoint.sh
 
-RUN mkdir /entrypoint.d
-COPY docker/entrypoint.d/* /entrypoint.d
-RUN chmod +x /entrypoint.d/*
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY docker/supervisor/supervisord.conf /etc/supervisord.conf
+RUN mkdir /etc/supervisor.d
+COPY docker/supervisor/app-cron.ini /etc/supervisor.d
+RUN mkdir /var/log/supervisor
 
-RUN mkdir /templates
-COPY docker/templates /templates
+RUN mkdir /root/templates
+COPY docker/templates /root/templates
 
 COPY docker/backup-scripts/* /usr/local/bin
-RUN chmod +x /usr/local/bin/*
+RUN chmod +x /usr/local/bin/backup-run
+RUN chmod +x /usr/local/bin/backup-restore
 
-CMD /entrypoint.sh
+CMD /root/entrypoint.sh

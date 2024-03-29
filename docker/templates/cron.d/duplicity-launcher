@@ -1,5 +1,0 @@
-# Example
-# min   hour   day   month   day-of-week   username   command
-# *     *      *     *       *             www-data   /var/www/html/bin/console cron:run --no-interaction --no-debug
-
-__CRON_TIME_DEF__ root exec /bin/bash -c ". /root/cron.env; /usr/local/bin/backup-run" > /dev/stdout 2>&1
