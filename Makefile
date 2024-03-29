@@ -7,3 +7,6 @@ build-and-push:
 
 deploy-prod:
 	docker compose -f docker-compose.production.yaml --env-file .env.production up -d
+
+create-multi-arch-docker-builder:
+	docker buildx create --use
